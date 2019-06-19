@@ -10,3 +10,17 @@ This program is based on an academic research article:
 Given a digitized stream centerline and a set of input x,y         coordinates. This software will transform the input x,y coordinates into a curvalinear coordinate system based on the stream centerline. This stream normal coordinate system is:
 - **ds** - a downstream distance (from the most upstream point)
 - **xs** - a cross-stream distance (an orthogonal distance to the centerline along the normal vector)
+
+### Data Prep
+All input files are CSV format
+##### Centerline Point (CL_pts)
+X,Y points describing the centerline 
+Minimum columns names = X, Y (caps)
+> a spatially variable search radii can be added by adding extra columns to the input centerline data
+>>- downstream variable radii, but symmetric - add 'R' column with distances
+>>- downstream variable, but non-symmetric - add 'LR' and 'RR' for different left and right distances
+    
+##### Data Point (data_pts)
+X,Y data points to be transformed
+Minimum columns = X, Y (caps)
+additional columns will be transferred to the output
