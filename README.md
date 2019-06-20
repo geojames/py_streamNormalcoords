@@ -11,7 +11,7 @@ Given a digitized stream centerline and a set of input x,y         coordinates. 
 - **ds** - a downstream distance (from the most upstream point)
 - **xs** - a cross-stream distance (an orthogonal distance to the centerline along the normal vector)
 
-![enter image description here](https://imgur.com/N6aSHzIm)
+![enter image description here](https://imgur.com/2MyvFN4.png)
         
 ### Data Prep
 All input files are CSV format
