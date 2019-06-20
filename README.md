@@ -49,3 +49,4 @@ Run the code (use the run button in your editor)
 - More in-depth description of the process
 - Overlapping search radii in sharp corners
 	- Spatially variable rMax values helps
+- Downstream distance variability as a function of transform parameters
