@@ -11,6 +11,8 @@ Given a digitized stream centerline and a set of input x,y         coordinates. 
 - **ds** - a downstream distance (from the most upstream point)
 - **xs** - a cross-stream distance (an orthogonal distance to the centerline along the normal vector)
 
+![enter image description here](https://imgur.com/N6aSHzIm)
+        
 ### Data Prep
 All input files are CSV format
 ##### Centerline Point (CL_pts)
@@ -23,4 +25,21 @@ Minimum columns names = X, Y (caps)
 ##### Data Point (data_pts)
 X,Y data points to be transformed
 Minimum columns = X, Y (caps)
-additional columns will be transferred to the output
+- additional columns will be transferred to the output
+
+### To Run:
+Ensure you have the following packages installed:
+- scipy, numpy, pandas, matplotlib
+
+Open the xy2sn.py file in a Python editor
+Fill in the input and output file paths/names in the Input section
+#### Choose your Transformation Parameters
+The transformation parameters are important, but require some trial and error. A lot will depend on what your initial point spacing is on your centerline and how tight your meander bends are.
+- nFilt  = number of filtering iterations
+- order  = polynomial order of the filter
+- window = number of points to include in the filter window
+- nDiscr = number of segments to split the centerline into
+	- a good place to start is your total length / desired segment length
+- rMax   = maximum distance away from the centerline the code will search for points (see above how to make this spatially variable)
+
+Run the code (use the run button in your editor)
