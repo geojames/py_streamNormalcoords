@@ -1,3 +1,4 @@
+
 # py_streamNormalcoords
 
 Stream Normal Coordinate Transformation
@@ -43,3 +44,8 @@ The transformation parameters are important, but require some trial and error. A
 - rMax   = maximum distance away from the centerline the code will search for points (see above how to make this spatially variable)
 
 Run the code (use the run button in your editor)
+
+### More Theory (coming soon)
+- More in-depth description of the process
+- Overlapping search radii in sharp corners
+	- Spatially variable rMax values helps
