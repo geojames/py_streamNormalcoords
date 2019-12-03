@@ -5,8 +5,8 @@ __author__ = 'James T. Dietrich'
 __contact__ = 'james.dietrich@uni.edu'
 __copyright__ = '(c) James Dietrich 2019'
 __license__ = 'MIT'
-__date__ = '18 June 2019'
-__version__ = '1.0'
+__date__ = '3 December 2019'
+__version__ = '2.0'
 __status__ = 'initial release'
 __url__ = 'https://github.com/geojames/py_streamNormalcoords'
 
@@ -92,14 +92,14 @@ import os
 # ** INPUTS **
 
 # Data In (files should be CSV)
-inPath   = 'C:/path_to_your_data'
-CL_pts   = 'CL_filename.csv'
-data_pts = 'Data_filename.csv'
+inPath   = 'Inpath'
+CL_pts   = 'centerline.csv'
+data_pts = 'points.csv'
 
 # Data Out
-outPath        = 'C:/path_for_your_outputs'
-out_splineCL    = 'Out_CL_filename.csv'
-out_streamNorm  = 'OutData_filename.csv'
+outPath        = 'OutPath'
+out_splineCL    = 'OutCenterline.csv'
+out_streamNorm  = 'outPoints.csv'
 
 # Transformation Parameters (see readme for more info)
 #   nFilt  = number of filtering iterations
@@ -111,11 +111,11 @@ out_streamNorm  = 'OutData_filename.csv'
 nFilt  = 5
 order  = 3
 window = 5
-nDiscr = 351
+nDiscr = 351    # Change this
 rMax   = 20
 
 # draw plots for each step (True/False)
-plots = True
+plots = False
 
 # end INPUTS - Run the code after this point
 
@@ -159,8 +159,22 @@ if not os.path.exists(outPath):
 
 # Read in input data
 CL_pts = pd.read_csv(inPath + CL_pts)
+
 inCenterlinePt = np.array([CL_pts.X,CL_pts.Y])
-data_pts =pd.read_csv(inPath + data_pts)
+data_pts = pd.read_csv(inPath + data_pts)
+
+dp_colNames = data_pts.columns.values.tolist()
+    
+if "x" in dp_colNames:
+    data_pts = data_pts.rename(index=str, columns={"x": "X"})
+    #data_pts.columns.values[data_pts.columns.get_loc("x")] = 'X'
+if "y" in dp_colNames:
+    data_pts = data_pts.rename(index=str, columns={"y": "Y"})
+    #data_pts.columns.values[data_pts.columns.get_loc("y")] = 'Y'
+if "z" in dp_colNames:
+    data_pts = data_pts.rename(index=str, columns={"z": "Z"})
+    #data_pts.columns.values[data_pts.columns.get_loc("z")] = 'Z'
+    
 
 # --PART 1--
 #   Smoothing the input centerline
@@ -340,16 +354,18 @@ for i,poly in enumerate(left_poly):
         #   p1 = spline segment start (from poly - x = poly[3][0], y = poly[3][1])
         #   p2 = spline segment end (from poly - x = poly[2][0], y = poly[2][1])
         #   p3 = data point [X,Y]
-        p1=np.array([[poly.vertices[3][0], poly.vertices[3][1]]])
-        p2=np.array([[poly.vertices[2][0], poly.vertices[2][1]]])
-        for j in range(inPoly.shape[0]):
-            p3 = np.array([[inPoly['x'].iloc[j],inPoly['y'].iloc[j]]])
-            inPoly['xs'].iloc[j] = np.linalg.norm(np.cross(p2-p1,p3-p1))/np.linalg.norm(p2-p1)
-    
-            # calc hypotenuse dist from spline segment start to data point
-            # calc distance along spline segment inculding the cum_dist
-            c_dist = euclid_dist(p1,p3)
-            inPoly['ds'].iloc[j] = cum_dist[i] + np.sqrt(c_dist**2 - inPoly['xs'].iloc[j]**2)
+        p1=np.repeat(np.array([[poly.vertices[3][0], poly.vertices[3][1]]]),inPoly.shape[0],axis=0)
+        p2=np.repeat(np.array([[poly.vertices[2][0], poly.vertices[2][1]]]),inPoly.shape[0],axis=0)
+        
+        p3 = np.array([inPoly['x'].values,inPoly['y'].values]).T
+        
+        # Alt Norm Eq for vectors (np.abs(x)**2)**(1./2)
+        inPoly['xs'] = (np.abs(np.cross(p2-p1,p3-p1))**2)**(1./2)/np.linalg.norm(p2-p1,axis=1)
+
+        # calc hypotenuse dist from spline segment start to data point
+        # calc distance along spline segment inculding the cum_dist
+        c_dist = euclid_dist(p1,p3)
+        inPoly['ds'] = cum_dist[i] + np.sqrt(c_dist**2 - inPoly['xs']**2)
         
         # update the sn dataframe with the new DS and XS values
         #   update keeps things organized by matching the origina dataframe index
@@ -376,22 +392,24 @@ for i,poly in enumerate(right_poly):
         
         # rename the x and y columns (to avoid update confusion later)
         inPoly.rename(columns={"X": "x", "Y": "y"},inplace=True)
-    
+        
         # cross-stream (XS) and downstream (DS) coords
         #   orthogaonal distance from data point to spline line
         #   p1 = spline segment start (from poly - x = poly[3][0], y = poly[3][1])
         #   p2 = spline segment end (from poly - x = poly[2][0], y = poly[2][1])
         #   p3 = data point [X,Y]
-        p1=np.array([[poly.vertices[3][0], poly.vertices[3][1]]])
-        p2=np.array([[poly.vertices[2][0], poly.vertices[2][1]]])
-        for j in range(inPoly.shape[0]):
-            p3 = np.array([[inPoly['x'].iloc[j],inPoly['y'].iloc[j]]])
-            inPoly['xs'].iloc[j] = -1 * np.linalg.norm(np.cross(p2-p1,p3-p1))/np.linalg.norm(p2-p1)
-    
-            # calc hypotenuse dist from spline segment start to data point
-            # calc distance along spline segment inculding the cum_dist
-            c_dist = euclid_dist(p1,p3)
-            inPoly['ds'].iloc[j] = cum_dist[i] + np.sqrt(c_dist**2 - inPoly['xs'].iloc[j]**2)
+        p1=np.repeat(np.array([[poly.vertices[3][0], poly.vertices[3][1]]]),inPoly.shape[0],axis=0)
+        p2=np.repeat(np.array([[poly.vertices[2][0], poly.vertices[2][1]]]),inPoly.shape[0],axis=0)
+        
+        p3 = np.array([inPoly['x'].values,inPoly['y'].values]).T
+        
+        # Alt Norm Eq for vectors (np.abs(x)**2)**(1./2)
+        inPoly['xs'] = -1 * (np.abs(np.cross(p2-p1,p3-p1))**2)**(1./2)/np.linalg.norm(p2-p1,axis=1)
+
+        # calc hypotenuse dist from spline segment start to data point
+        # calc distance along spline segment inculding the cum_dist
+        c_dist = euclid_dist(p1,p3)
+        inPoly['ds'] = cum_dist[i] + np.sqrt(c_dist**2 - inPoly['xs']**2)
         
         # update the sn dataframe with the new DS and XS values
         #   update keeps things organized by matching the origina dataframe index
