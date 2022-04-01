@@ -49,4 +49,8 @@ Run the code (use the run button in your editor)
 - More in-depth description of the process
 - Overlapping search radii in sharp corners
 	- Spatially variable rMax values helps
+	- With Uniform RMax there is the possibility of overlapping cells
+	- ![enter image description here](https://imgur.com/DXKeiwa)
+	- With Variable RMax there overlapping cells can be avoided
+	- ![enter image description here](https://imgur.com/SNqJkAY)
 - Downstream distance variability as a function of transform parameters
