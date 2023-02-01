@@ -1,49 +1,54 @@
 
 # py_streamNormalcoords
-
 Stream Normal Coordinate Transformation
-Compatibility:  Python 3.7
+Compatibility:  Python 3.10
 
-This program is based on an academic research article:
+###### Change Log
+* 2023 Feb 01 - swiched code structure to be function based, added 'reverse' transformations (sn2xy) to go from sn coords back to xy coords.
+
+This code is based on an academic research article:
 > Legleiter CJ, Kyriakidis PC. 2006. Forward and Inverse Transformation  between Cartesian and Channel-fitted Coordinate Systems for Meandering Rivers. Mathematical Geology 38 : 927–958. DOI: 10.1007/s11004-006-9056-6
 >- The original source code from this article was in Matlab                 (acquired by Dietrich from Carl Legleiter, cjl@usgs.gov). This code is a translation of that original Matlab code with some added features/tweaks.
                 
-Given a digitized stream centerline and a set of input x,y         coordinates. This software will transform the input x,y coordinates into a curvalinear coordinate system based on the stream centerline. This stream normal coordinate system is:
+Given a digitized stream centerline and a set of input x,y coordinates. This software will transform the input x,y coordinates into a curvalinear coordinate system based on the stream centerline. This stream normal coordinate system is:
 - **ds** - a downstream distance (from the most upstream point)
 - **xs** - a cross-stream distance (an orthogonal distance to the centerline along the normal vector)
 
 ![enter image description here](https://imgur.com/2MyvFN4.png)
-        
+
+### Demos
+In the demo folder there are two(2) notebook files that show examples of the code in action.
 ### Data Prep
-All input files are CSV format
+The inputs to the fuctions are arrays of points or pandas dataframes
 ##### Centerline Point (CL_pts)
 X,Y points describing the centerline 
-Minimum columns names = X, Y (caps)
-> a spatially variable search radii can be added by adding extra columns to the input centerline data
->>- downstream variable radii, but symmetric - add 'R' column with distances
->>- downstream variable, but non-symmetric - add 'LR' and 'RR' for different left and right distances
+
+> a spatially variable search radii can be added by adding extra columns to the input centerline data and used in the fuctions
+>>- downstream variable radii, but symmetric - 1-D Array
+>>- downstream variable, but non-symmetric - 2-D Array 
+>>	- Column 1 = left bank, Column 2 = right bank)
     
 ##### Data Point (data_pts)
 X,Y data points to be transformed
-Minimum columns = X, Y (caps)
-- additional columns will be transferred to the output
+- the order of the inputs is kept, so concatenating with point attributes should be easy
 
 ### To Run:
 Ensure you have the following packages installed:
 - scipy, numpy, pandas, matplotlib
 
-Open the xy2sn.py file in a Python editor
-Fill in the input and output file paths/names in the Input section
-#### Choose your Transformation Parameters
+#### Choose your Transformation Parameters for xy2sn
 The transformation parameters are important, but require some trial and error. A lot will depend on what your initial point spacing is on your centerline and how tight your meander bends are.
-- nFilt  = number of filtering iterations
-- order  = polynomial order of the filter
-- window = number of points to include in the filter window
+###### Required
 - nDiscr = number of segments to split the centerline into
 	- a good place to start is your total length / desired segment length
 - rMax   = maximum distance away from the centerline the code will search for points (see above how to make this spatially variable)
 
-Run the code (use the run button in your editor)
+###### Optional
+- nFilt  = number of filtering iterations (default is 5)
+- order  = polynomial order of the filter (default is 3, `cubic` )
+- window = number of points to include in the filter window (default is 5)
+
+
 
 ### More Theory (coming soon)
 - More in-depth description of the process
