@@ -48,8 +48,6 @@ The transformation parameters are important, but require some trial and error. A
 - order  = polynomial order of the filter (default is 3, `cubic` )
 - window = number of points to include in the filter window (default is 5)
 
-
-
 ### More Theory (coming soon)
 - More in-depth description of the process
 - Overlapping search radii in sharp corners
@@ -59,3 +57,12 @@ The transformation parameters are important, but require some trial and error. A
 	- With Variable RMax there overlapping cells can be avoided
 	- ![enter image description here](https://i.imgur.com/SNqJkAYl.png)
 - Downstream distance variability as a function of transform parameters
+
+## EXAMPLES
+##### XY2SN
+![xy2sn_before](figures/XY2SN_Before.png)
+![xy2sn_after](figures/XY2SN_After.png)
+
+##### SN2XY
+![sn2xy_before](figures/SN2XY_Before.png)
+![sn2xy_after](figures/SN2XY_After.png)
