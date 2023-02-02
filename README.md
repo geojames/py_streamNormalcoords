@@ -59,10 +59,20 @@ The transformation parameters are important, but require some trial and error. A
 - Downstream distance variability as a function of transform parameters
 
 ## EXAMPLES
-##### XY2SN
+### XY2SN
+Colors are based onthe Y-coordinates of the points
+###### Regular Data Points
+![xy2sn_before](figures/XY2SN_Before_Net.png)
+![xy2sn_after](figures/XY2SN_After_Net.png)
+###### Random Data Points
 ![xy2sn_before](figures/XY2SN_Before.png)
 ![xy2sn_after](figures/XY2SN_After.png)
 
-##### SN2XY
+### SN2XY
+Colors are based onthe Downstream-coordinates of the points
+###### Regular Data Points
+![sn2xy_before](figures/SN2XY_Before_net.png)
+![sn2xy_after](figures/SN2XY_After_Net.png)
+###### Random Data Points
 ![sn2xy_before](figures/SN2XY_Before.png)
 ![sn2xy_after](figures/SN2XY_After.png)
